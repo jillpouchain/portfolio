@@ -1,6 +1,7 @@
 // Style
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue-next/dist/bootstrap-vue-next.css';
+import '@fortawesome/fontawesome-free/css/all.min.css';
 import './style.css';
 
 import { createApp } from 'vue';

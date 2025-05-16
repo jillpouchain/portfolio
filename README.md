@@ -9,3 +9,7 @@ Learn more about the recommended Project Setup and IDE Support in the [Vue Docs 
 ## Added Bootstrap Vue Next library
 
 Added [bootstrap-vue-next](https://github.com/bootstrap-vue-next/bootstrap-vue-next) and [unplugin-vue-components](https://github.com/unplugin/unplugin-vue-components)
+
+## Added Fontawesome Free library
+
+Added [font-awesome](https://github.com/FortAwesome/Font-Awesome).
