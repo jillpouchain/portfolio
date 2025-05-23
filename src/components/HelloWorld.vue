@@ -1,10 +1,80 @@
 <script setup lang="ts">
+import { onBeforeUnmount, onMounted, ref } from 'vue'
+
+interface Section {
+  id: string
+  text: string
+  title: string
+}
+
+interface Skill {
+  title: string
+  items: string[]
+}
 
 defineProps<{ msg: string }>()
 
-function onClick() {
-  window.scrollTo(0, 0);
-}
+const sections: Section[] = [
+  {
+    id: 'home',
+    text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec luctus erat quam, at ornare odio facilisis condimentum. Curabitur facilisis venenatis lectus. Ut et vehicula velit, bibendum venenatis elit. Donec in tellus vel lectus ultricies finibus id et ligula. Nullam ultrices arcu non tortor fermentum eleifend. Sed id sem augue. Nunc facilisis justo a lorem aliquam, et pretium dui tincidunt. Quisque vitae sodales enim. Nunc rutrum auctor odio quis lobortis. Cras mauris est, lobortis at fermentum in, efficitur vitae ex. Donec sit amet libero at risus auctor gravida sed id mauris. Phasellus in massa tempus, convallis metus non, varius elit. Vestibulum sed libero eget elit scelerisque luctus. Quisque euismod nunc sed ex imperdiet, eu faucibus erat lobortis. Morbi sodales neque pharetra, suscipit velit nec, volutpat justo. Maecenas justo felis, mollis a tempus sit amet, venenatis vel erat. Suspendisse fermentum arcu quis laoreet mollis. Nunc vel nisi eu arcu lobortis suscipit. Nullam ipsum arcu, hendrerit id imperdiet ac, laoreet quis diam. Integer id blandit dolor. Curabitur tortor ante, egestas at tincidunt eget, convallis id orci. Pellentesque gravida quam tortor, id euismod massa luctus quis. Aliquam cursus libero sem, eget consectetur quam sagittis id. Curabitur mollis in lectus quis pretium. Curabitur vel odio pellentesque, ornare arcu quis, blandit odio. Donec eget ipsum a nisi scelerisque rutrum. Sed sed urna at elit cursus congue sit amet eu tortor. Maecenas auctor metus aliquam dignissim ullamcorper. Integer tincidunt dui vitae dui bibendum, sed auctor quam ullamcorper. Etiam suscipit sapien ac consequat venenatis. Suspendisse at magna felis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Quisque eu euismod turpis. Vivamus semper massa felis, at eleifend massa tempor in. Nam convallis quam justo, vel ornare dui viverra ut. In in nunc nec eros convallis sollicitudin non at augue. Proin non fringilla odio, quis bibendum ante. Sed finibus erat ut arcu mollis, a interdum ligula tristique. Nunc sed nisi eu tellus feugiat rhoncus. Ut blandit massa leo. Sed nisl tortor, mattis id efficitur nec, porttitor quis ligula. Duis convallis, augue in pulvinar pellentesque, purus libero vehicula dui, ac cursus turpis nisi sollicitudin sem.',
+    title: 'Home',
+  },
+  {
+    id: 'about',
+    text: 'Sed ac mauris cursus, dictum libero eget, gravida enim. Donec at suscipit tellus. Vestibulum vestibulum at urna nec elementum. Donec condimentum odio vel sapien volutpat, ac tristique velit placerat. Nunc sit amet erat ex. Curabitur nec molestie arcu. Integer mattis, neque at semper pharetra, erat ex feugiat sem, nec elementum lorem metus dictum lacus. Suspendisse sapien turpis, feugiat in imperdiet a, posuere vel eros. Nulla justo risus, sagittis ac nisl sit amet, hendrerit mollis nisi. Integer vel quam mauris. Nunc ut velit elit. Nullam et tortor porttitor, imperdiet lorem a, porta orci. Sed consectetur sollicitudin tellus sed luctus. Morbi purus diam, dapibus sit amet arcu nec, euismod consequat odio. Fusce vitae posuere tortor. Aliquam suscipit quam eget dolor pulvinar, eget vulputate tellus egestas. Curabitur eu maximus sem. Curabitur viverra lectus vitae felis sollicitudin, eu mattis lacus semper. Aliquam nec felis sollicitudin nunc mattis placerat id at ex. Vivamus porttitor enim dignissim congue tincidunt. Etiam in velit ultrices, egestas lectus id, aliquet felis. Nam eget dapibus sem. Aenean at ullamcorper diam. Suspendisse ac accumsan orci. Curabitur ornare nunc quam, sit amet viverra nisl malesuada at. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Mauris scelerisque erat lectus, at aliquam leo fermentum nec. Donec lacinia porttitor eros in fermentum. Sed lacus lacus, porta vel consectetur in, tincidunt et nibh. Vestibulum pulvinar pharetra felis sit amet maximus. Vestibulum nec placerat metus. Morbi nec odio eu odio placerat eleifend nec ac turpis. Morbi posuere tortor in urna vehicula congue. Quisque eget mi porta, ornare mauris et, congue odio. Aliquam nec mattis metus, at malesuada elit.',
+    title: 'About Me',
+  },
+  {
+    id: 'experiences',
+    text: 'Maecenas orci ante, semper at ultricies sit amet, volutpat sed enim. Nunc at lacus placerat, maximus eros nec, porttitor erat. Interdum et malesuada fames ac ante ipsum primis in faucibus. Mauris varius dui sodales metus volutpat scelerisque. Quisque ac metus ullamcorper eros vehicula elementum vel a ligula. Nunc venenatis quis ipsum id vulputate. Vestibulum at erat lacus. Sed ac nibh lectus. In a magna neque. Mauris vestibulum id est et varius. Nam a nisl id quam ultrices vestibulum sed vitae est. Duis congue quam sit amet tortor lacinia, a vestibulum justo interdum. Aenean nec eros et arcu consequat dignissim. Curabitur tortor quam, molestie a dignissim sollicitudin, ultrices non arcu. Praesent vel orci vitae augue convallis vehicula ac et libero. Etiam porta scelerisque euismod. Sed sit amet feugiat diam, sed ornare lectus. Curabitur finibus ipsum quis ex tempor, a varius arcu mollis. Ut eu nulla in dui tempor congue. Phasellus luctus finibus quam ac congue. In tincidunt magna quis varius suscipit. Suspendisse tempus dolor porta mi tincidunt egestas. Donec eget sollicitudin augue. Mauris in nisi in augue pharetra elementum in eu neque. Curabitur in sodales velit. Morbi scelerisque justo id vulputate iaculis. Donec hendrerit facilisis leo, quis semper nibh malesuada eget. Suspendisse scelerisque dolor augue, vel tincidunt lacus aliquam quis.',
+    title: 'Experiences',
+  }
+];
+
+const skills: Skill[] = [
+  {
+    items: ['Javascript', 'Typescript', 'Python', 'Golang'],
+    title: 'Languages',
+  },
+  {
+    items: ['React', 'Next.js', 'Angular', 'Vue.js', 'Tailwind', 'CSS', 'SCSS', 'Figma'],
+    title: 'Frontend and Design',
+  },
+  {
+    items: ['Node.js', 'Nest.Js', 'Express', 'Golang', 'PostgreSQL', 'MySQL', 'MongoDB'],
+    title: 'Backend',
+  },
+  {
+    items: ['Git', 'Jest', 'Docker', 'Jira', 'Redux'],
+    title: 'Tools',
+  },
+];
+
+const activeSection = ref<string>('home');
+
+let observer: IntersectionObserver;
+
+onMounted(() => {
+  const elements = document.querySelectorAll<HTMLElement>("div.text-start");
+  observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        activeSection.value = entry.target.id
+      }
+    });
+  },{
+      threshold: 0.5,
+      rootMargin: '0px 0px -40% 0px'
+    });
+  elements.forEach((element) => observer.observe(element));
+});
+
+onBeforeUnmount(() => {
+  if (observer) {
+    observer.disconnect();
+  }
+});
 </script>
 
 <template>
@@ -15,58 +85,39 @@ function onClick() {
       <BNavText class="text-start">Making full-stack apps, and enjoying my time while I do it</BNavText>
       <BNavItem link-class="p-0" href="https://www.linkedin.com/"><i class="fa-brands fa-linkedin fa-xl"></i></BNavItem>
       <!-- <BBadge><i class="fa-brands fa-linkedin"></i> Let's keep in touch !</BBadge> -->
-      <BNavItem link-class="fw-bold px-0" @click="onClick">Home</BNavItem>
-      <BNavItem link-class="fw-bold px-0" href="#about">About me</BNavItem>
-      <BNavItem link-class="fw-bold px-0" href="#experiences">Experiences</BNavItem>
-      <BNavItem link-class="fw-bold px-0" href="#skills">Skills</BNavItem>
+       <template v-for="section in sections">
+        <BNavItem
+          :id="`menu-${section.id}`"
+          :class="{ active: activeSection === section.id }"
+          :href="`#${section.id}`"
+          :link-class="`fw-bold px-0 ${activeSection === section.id ? 'text-primary' : 'text-dark'}`"
+        >
+          {{ section.title }}
+        </BNavItem>
+       </template>
+      <BNavItem
+        id="menu-skills"
+        :class="{ active: activeSection === 'skills' }"
+        href="#skills"
+        :link-class="`fw-bold px-0 ${activeSection === 'skills' ? 'text-primary' : 'text-dark'}`"
+      >Skills</BNavItem>
       <BButton class="text-white" href="mailto:jillpouchain@gmail.com" variant="success">Contact me</BButton>
     </BNav>
-    <div style="width: 70%;">
-      <div id="home" class="text-start p-3">
-        <h1>Home</h1>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum faucibus mattis maximus. Duis eu posuere quam, sit amet pharetra dolor. Quisque quis ultricies nisi. Morbi rutrum dolor ac sem maximus elementum. Etiam ut ligula nibh. Aenean quis aliquam neque, id pharetra lacus. Nullam scelerisque est ac elit hendrerit blandit. Ut dignissim hendrerit faucibus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Quisque congue magna et dui laoreet eleifend.</p>
-        <p>Maecenas feugiat euismod ornare. Aliquam a fringilla elit. Curabitur eleifend nisi eget sapien pretium pretium. Duis bibendum leo nibh. Suspendisse vel egestas mi. Donec sollicitudin eros lacus, ut gravida lorem scelerisque at. Donec ex sem, consectetur in ullamcorper nec, commodo eget est. Etiam id quam lacus. Vestibulum nibh nisi, hendrerit ac consectetur quis, euismod sit amet ipsum. Maecenas non tortor commodo, gravida dolor vel, gravida sem. Nulla eu purus ac ante faucibus posuere vitae quis quam. Nulla facilisi.</p>
-      </div>
-      <div id="about" class="text-start p-3">
-        <h1>About</h1>
-        <p>Donec pellentesque maximus sem ac tempus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In nec dolor dui. Vivamus ac felis at lorem facilisis auctor in in est. Vestibulum euismod at nisi quis egestas. Sed dignissim condimentum odio non gravida. Praesent non ipsum eu enim fringilla commodo. Duis ut dolor risus. Nulla dapibus porttitor ligula, at pellentesque sapien mattis eu. Pellentesque aliquet sed lacus ut molestie. Morbi hendrerit justo turpis, eget dignissim odio tristique id. Morbi gravida pretium purus sit amet tristique. Fusce interdum arcu a tortor facilisis, hendrerit faucibus mauris lacinia. Sed id leo eget tortor aliquam hendrerit eu quis nunc.</p>
-        <p>Mauris vehicula nunc at cursus placerat. Proin euismod bibendum eros molestie venenatis. Fusce vitae nunc purus. Donec lobortis metus ac arcu ultricies, vel rutrum eros pellentesque. Donec egestas placerat urna id faucibus. Ut molestie tempor leo, nec pharetra ex malesuada et. Duis interdum rutrum sem tempor suscipit. Duis vitae iaculis nisl. Mauris iaculis eu leo non posuere. Sed sed nibh consequat, consectetur odio at, vehicula velit. Cras eu diam sit amet quam dapibus lacinia.</p>
-      </div>
-      <div id="experiences" class="text-start p-3">
-        <h1>Experiences</h1>
-        <p>Aliquam malesuada enim et diam maximus blandit. Morbi sed eros gravida, cursus metus et, tempor velit. Nam sit amet velit vitae libero volutpat tincidunt vitae ullamcorper orci. Etiam vel finibus lectus. In eget nunc eu risus accumsan faucibus. Donec dignissim velit non tellus ultrices facilisis. Phasellus elementum nibh id tempus cursus. Nam eu dui lobortis, vulputate arcu ac, hendrerit magna. Aliquam lobortis magna libero, id tristique eros commodo at. Pellentesque egestas ligula est, at pretium massa pulvinar a. Suspendisse luctus velit diam, ut malesuada velit vulputate ut. Sed faucibus justo eu turpis iaculis mattis. Aliquam in bibendum augue, sit amet sollicitudin velit. Aenean felis lacus, bibendum ut congue vel, commodo a est. Nam consectetur ultricies convallis. Maecenas nibh enim, blandit nec egestas eu, congue sed libero.</p>
-        <p>Nam tellus ex, aliquet sed malesuada ut, placerat eget lectus. Suspendisse commodo, felis vitae iaculis feugiat, turpis eros bibendum purus, vel aliquet nulla ligula vel odio. Aliquam erat volutpat. Aenean quis leo quis diam congue faucibus non ut leo. Cras sapien dolor, tempus sit amet justo eget, gravida cursus diam. Vivamus at condimentum dolor. Cras consequat quam at arcu laoreet convallis. In leo massa, vulputate eget mauris vel, semper sollicitudin nisi. Quisque in gravida nulla. Integer nec tellus ac ligula tincidunt sagittis. Phasellus in sem nec turpis tincidunt sagittis eu quis erat.</p>
-      </div>
+
+    <div style="padding-bottom: 20rem; width: 70%;">
+      <template v-for="section in sections">
+        <div :id="section.id" class="text-start p-3">
+          <h1>{{ section.title }}</h1>
+          <p>{{ section.text }}</p>
+        </div>
+      </template>
+
       <div id="skills" class="text-start p-3">
         <h1>Skills</h1>
-        <div>Languages</div>
-        <BBadge pill>Javascript</BBadge>
-        <BBadge pill>Typescript</BBadge>
-        <BBadge pill>Python</BBadge>
-        <BBadge pill>Golang</BBadge>
-        <div>Frontend and Design</div>
-        <BBadge pill>React</BBadge>
-        <BBadge pill>Next.js</BBadge>
-        <BBadge pill>Angular</BBadge>
-        <BBadge pill>Vue.js</BBadge>
-        <BBadge pill>Tailwind</BBadge>
-        <BBadge pill>CSS</BBadge>
-        <BBadge pill>SCSS</BBadge>
-        <BBadge pill>Figma</BBadge>
-        <div>Backend</div>
-        <BBadge pill>Node.js</BBadge>
-        <BBadge pill>Nest.Js</BBadge>
-        <BBadge pill>Express</BBadge>
-        <BBadge pill>Golang</BBadge>
-        <BBadge pill>PostgreSQL</BBadge>
-        <BBadge pill>MySQL</BBadge>
-        <BBadge pill>MongoDB</BBadge>
-        <div>Tools</div>
-        <BBadge pill>Git</BBadge>
-        <BBadge pill>Jest</BBadge>
-        <BBadge pill>Docker</BBadge>
-        <BBadge pill>Jira</BBadge>
-        <BBadge pill>Redux</BBadge>
+        <template v-for="skill in skills">
+          <div>{{ skill.title }}</div>
+          <BBadge v-for="item in skill.items" pill>{{ item }}</BBadge>
+        </template>
       </div>
     </div>
   </div>
@@ -83,4 +134,8 @@ function onClick() {
   align-self: flex-start;
 }
 
+.active {
+  font-weight: 700;
+  font-size: 1.25rem;
+}
 </style>

@@ -63,7 +63,7 @@ button:focus-visible {
   margin: 0 auto;
   text-align: center;
   width: 100vw;
-  padding: 3rem;
+  padding: 1rem 20rem;
 }
 
 @media (prefers-color-scheme: light) {
